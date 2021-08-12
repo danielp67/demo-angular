@@ -1,8 +1,8 @@
 import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from '@angular/router';
-// @ts-ignore
-import { Observable } from 'rxjs/Observable';
 import { AuthService } from './auth.service';
 import { Injectable } from '@angular/core';
+import {Observable} from "rxjs";
+
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -10,9 +10,10 @@ export class AuthGuard implements CanActivate {
   constructor(private authService: AuthService,
               private router: Router) { }
 
+  // @ts-ignore
   canActivate(
     route: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {
+    state: RouterStateSnapshot) {
     if(this.authService.isAuth) {
       return true;
     } else {
