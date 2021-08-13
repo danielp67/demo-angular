@@ -1,6 +1,12 @@
-import {Subject} from "rxjs";
+import { Subject } from 'rxjs/Subject';
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 
+@Injectable()
 export class AppareilService {
+
+  appareilsSubject = new Subject<any[]>();
+
   appareils = [
     {
       id: 1,
@@ -19,6 +25,35 @@ export class AppareilService {
     }
   ];
 
+  constructor(private httpClient: HttpClient) { }
+
+  saveAppareilsToServer() {
+    this.httpClient
+      .post('https://fir-angular-58f69-default-rtdb.europe-west1.firebasedatabase.app/appareils.json', this.appareils)
+      .subscribe(
+        () => {
+          console.log('Enregistrement terminé !');
+        },
+        (error) => {
+          console.log('Erreur ! : ' + error);
+        }
+      );
+  }
+
+  getAppareilsFromServer() {
+    this.httpClient
+      .get<any[]>('https://fir-angular-58f69-default-rtdb.europe-west1.firebasedatabase.app/appareils.json')
+      .subscribe(
+        (response) => {
+          console.log(response)
+          this.appareils = response;
+          this.emitAppareilSubject();
+        },
+        (error) => {
+          console.log('Erreur ! : ' + error);
+        }
+      );
+  }
 
   getAppareilById(id: number) {
     const appareil = this.appareils.find(
@@ -51,7 +86,6 @@ export class AppareilService {
   }
 
 
-  appareilsSubject = new Subject<any[]>();
 
   emitAppareilSubject() {
     this.appareilsSubject.next(this.appareils.slice());
